@@ -1,3 +1,8 @@
+# TimeOffSite
+A SharePoint site for managing time offs. To run the web part locally, run ```gulp serve``` in the cmd
+
+
+--Auto generated template--
 ## time-off-site
 
 This is where you include your WebPart documentation.
