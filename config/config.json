@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "time-off-summary-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/timeOffSummary/TimeOffSummaryWebPart.js",
+          "manifest": "./src/webparts/timeOffSummary/TimeOffSummaryWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "TimeOffSummaryWebPartStrings": "lib/webparts/timeOffSummary/loc/{locale}.js"
+  }
+}
