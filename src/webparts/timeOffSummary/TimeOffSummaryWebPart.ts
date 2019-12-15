@@ -61,11 +61,19 @@ export default class TimeOffSummaryWebPart extends BaseClientSideWebPart<ITimeOf
         }
       }
 
-      document.getElementById("paidTimeOff").innerHTML = "Paid time off: " + timeOffTypeDaysMap.get('Paid time off');
-      document.getElementById("sickLeave").innerHTML = "Sick Leave: " + timeOffTypeDaysMap.get('Sick Leave');
-      document.getElementById("unpaidTimeOff").innerHTML = "Unpaid time off: " + timeOffTypeDaysMap.get('Unpaid time off');
-      console.log(timeOffTypeDaysMap);
+      this.setDaysToHTML(timeOffTypeDaysMap);
     });
+  }
+
+  private setDaysToHTML(timeOffTypeDaysMap: Map<String, Number>) {
+    document.getElementById("paidTimeOff").innerHTML = this.getDateData("Paid time off", timeOffTypeDaysMap);
+    document.getElementById("sickLeave").innerHTML = this.getDateData("Sick Leave", timeOffTypeDaysMap);
+    document.getElementById("unpaidTimeOff").innerHTML = this.getDateData("Unpaid time off", timeOffTypeDaysMap);
+  }
+
+  private getDateData(key: String, timeOffTypeDaysMap: Map<String, Number>): string {
+    return key + ": " + (timeOffTypeDaysMap.get(key) ? String(timeOffTypeDaysMap.get(key)) : String(0)); // If the time off type exists in the map, it appends it to it, else it returns 0,
+    // to prevent appending "undefined"
   }
 
   public render(): void {
@@ -83,7 +91,7 @@ export default class TimeOffSummaryWebPart extends BaseClientSideWebPart<ITimeOf
                 <h1 class="${ styles.column}">Days Taken</h1>
 
                 <div class="${ styles.column}">
-                  <span class="${ styles.title}" id="paidTimeOff">Paid Time Off: 0</span>
+                  <span class="${ styles.title}" id="paidTimeOff">Paid time off: 0</span>
                 </div>
               
                 <div class="${ styles.column}">
@@ -91,7 +99,7 @@ export default class TimeOffSummaryWebPart extends BaseClientSideWebPart<ITimeOf
                 </div>
 
                 <div class="${ styles.column}">
-                  <span class="${ styles.title}" id="unpaidTimeOff">Unpaid Time Off: 0</span>
+                  <span class="${ styles.title}" id="unpaidTimeOff">Unpaid time off: 0</span>
                 </div>
             
           </div>
@@ -111,7 +119,7 @@ export default class TimeOffSummaryWebPart extends BaseClientSideWebPart<ITimeOf
             description: strings.PropertyPaneDescription
           },
           groups: [
-            
+
           ]
         }
       ]
