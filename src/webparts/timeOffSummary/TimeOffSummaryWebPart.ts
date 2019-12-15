@@ -49,21 +49,45 @@ export default class TimeOffSummaryWebPart extends BaseClientSideWebPart<ITimeOf
       let timeOffTypeDaysMap = new Map<String, Number>();
       for (let i = 0; i < myApprovedTimeOffRequests.length; i++) {
         let currentTimeOffRequest = myApprovedTimeOffRequests[i];
-        let millisecondsDifference = new Date(currentTimeOffRequest.EndDate).getTime() - new Date(currentTimeOffRequest.Start_x0020_Date).getTime(); // for some reason Sharepoint
+        let startDate = new Date(currentTimeOffRequest.Start_x0020_Date);// for some reason Sharepoint
         // encodes the space of the Start Date using x0020,
         // but it doesn't encode the End Date
+
+        let endDate = new Date(currentTimeOffRequest.EndDate);
+        let millisecondsDifference = endDate.getTime() - startDate.getTime();
+
         let daysDifference = (millisecondsDifference / (1000 * 60 * 60 * 24)) + 1; // we need to add 1, because for example, if the time off is only 1 day, we will get 0 as a result
+
+        let weekendsAmount: Number = that.getPeriodWeekendsDays(startDate, endDate);
+        daysDifference -= weekendsAmount.valueOf();
+
         if (timeOffTypeDaysMap.has(currentTimeOffRequest.Timeofftype)) { // we need to add the days that are in the current key, so we don't lose the already contained days
           timeOffTypeDaysMap.set(currentTimeOffRequest.Timeofftype, timeOffTypeDaysMap.get(currentTimeOffRequest.Timeofftype).valueOf() + daysDifference);
         }
         else { // we just set the value
           timeOffTypeDaysMap.set(currentTimeOffRequest.Timeofftype, daysDifference);
         }
+
       }
 
-      this.setDaysToHTML(timeOffTypeDaysMap);
+      that.setDaysToHTML(timeOffTypeDaysMap);
     });
   }
+
+  private getPeriodWeekendsDays(startDate: Date, endDate: Date): number { // Returns the amount of weekend days in the current period
+    let amountOfWeekendsDays: number = 0;
+
+    while (startDate < endDate) {
+      let dayOfWeek = startDate.getDay();
+      if (dayOfWeek == 6 || dayOfWeek == 0) { // It's either Saturday or Sunday
+        amountOfWeekendsDays++;
+      }
+
+      startDate.setDate(startDate.getDate() + 1);
+    }
+
+    return amountOfWeekendsDays;
+  };
 
   private setDaysToHTML(timeOffTypeDaysMap: Map<String, Number>) {
     document.getElementById("paidTimeOff").innerHTML = this.getDateData("Paid time off", timeOffTypeDaysMap);
